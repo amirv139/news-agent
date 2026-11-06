@@ -1,0 +1,38 @@
+name: Daily news brief
+
+on:
+  schedule:
+    # GitHub uses UTC time. 10:17 UTC = 5:17 AM Toronto in winter, 6:17 AM in summer.
+    # (GitHub sometimes starts scheduled jobs a bit late, so we start early.)
+    - cron: "17 10 * * *"
+  workflow_dispatch:   # adds a "Run workflow" button so you can test it any time
+
+permissions:
+  contents: write      # lets the bot save the new page into your repo
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install packages
+        run: pip install -r requirements.txt
+
+      - name: Run the news agent
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-flash-lite-latest' }}
+        run: python news_agent.py
+
+      - name: Save the new page
+        run: |
+          git config user.name "news-bot"
+          git config user.email "news-bot@users.noreply.github.com"
+          git add docs
+          git commit -m "Morning brief $(date -u +%F)" || echo "Nothing new"
+          git push
