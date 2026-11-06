@@ -192,25 +192,101 @@ def ask_gemini(items: list[dict]) -> dict:
 # ---------------------------------------------------------------------------
 
 CSS = """
-:root{--bg:#f6f5f2;--card:#fff;--text:#1d1d1f;--muted:#6b6b70;--accent:#c2410c;--line:#e6e4df}
-@media (prefers-color-scheme:dark){:root{--bg:#141414;--card:#1f1f21;--text:#ececec;--muted:#9a9aa0;--accent:#fb923c;--line:#2e2e31}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);
-font:17px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-main{max-width:680px;margin:0 auto;padding:20px 16px 60px}
-h1{font-size:1.6rem;margin:0}.date{color:var(--muted);margin:2px 0 18px}
-.overview{background:var(--card);border-left:4px solid var(--accent);padding:14px 16px;border-radius:10px}
-h2{font-size:1.15rem;margin:30px 0 10px;color:var(--accent)}
-.story{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:10px 0}
-.story h3{font-size:1.05rem;margin:0 0 6px}.story p{margin:6px 0}
-.why{color:var(--muted);font-size:.95rem}.links a{font-size:.85rem;color:var(--accent);margin-right:10px}
-.term{margin-top:30px;padding:14px 16px;border:1px dashed var(--line);border-radius:12px}
-footer{margin-top:30px;color:var(--muted);font-size:.85rem}a{color:var(--accent)}
+/* Always dark, warm and dim - made for reading early in the morning */
+:root{
+  --bg:#141210;          /* warm near-black */
+  --bg-glow:#1d1915;
+  --card:#1e1b18;
+  --card-hi:#25211d;
+  --text:#d9d1c5;        /* soft cream, not bright white */
+  --soft:#b3aa9d;
+  --muted:#857c71;
+  --accent:#d9a066;      /* gentle amber */
+  --accent-dim:rgba(217,160,102,.13);
+  --line:rgba(255,235,210,.06);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;color:var(--text);
+  background:radial-gradient(120% 60% at 50% 0%,var(--bg-glow) 0%,var(--bg) 60%) fixed,var(--bg);
+  font:17px/1.7 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased}
+main{max-width:640px;margin:0 auto;padding:34px 16px 70px}
+a{color:var(--accent);text-decoration:none}
+
+.hello{font-size:.95rem;color:var(--muted);margin:0;letter-spacing:.2px}
+h1{font-size:1.85rem;font-weight:650;margin:2px 0 4px;letter-spacing:-.3px;color:var(--text)}
+.meta{color:var(--muted);font-size:.9rem;margin:0 0 24px}
+
+.overview{position:relative;background:linear-gradient(145deg,#2a221a 0%,var(--card) 70%);
+  border-radius:24px;padding:20px 20px 20px;color:var(--text);
+  box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.overview .label{display:inline-block;font-size:.75rem;font-weight:600;letter-spacing:.6px;
+  text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.overview p{margin:0}
+
+.section{display:flex;align-items:center;gap:10px;margin:40px 4px 14px}
+.section .icon{width:38px;height:38px;border-radius:14px;background:var(--accent-dim);
+  display:grid;place-items:center;font-size:1.15rem}
+.section h2{font-size:1.1rem;font-weight:600;margin:0;color:var(--text)}
+
+.story{background:var(--card);border-radius:22px;padding:18px 20px;margin:12px 0;
+  border:1px solid var(--line);box-shadow:0 6px 20px rgba(0,0,0,.18);
+  animation:rise .5s ease-out both}
+.story h3{font-size:1.05rem;line-height:1.45;font-weight:600;margin:0 0 8px;color:var(--text)}
+.story p{margin:0 0 10px;color:var(--soft)}
+.why{display:flex;gap:10px;background:var(--card-hi);border-radius:14px;padding:10px 12px;
+  font-size:.92rem;color:var(--soft);margin:12px 0 4px}
+.why span{flex:none}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.links a{font-size:.8rem;padding:6px 12px;border-radius:999px;background:var(--accent-dim);
+  color:var(--accent);transition:background .25s ease}
+.links a:active,.links a:hover{background:rgba(217,160,102,.22)}
+
+.term{margin-top:40px;border-radius:22px;padding:18px 20px;background:var(--card);
+  border:1px dashed rgba(217,160,102,.25)}
+.term .label{font-size:.75rem;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--accent)}
+.term h3{margin:4px 0 6px;font-size:1.05rem}
+.term p{margin:0;color:var(--soft)}
+
+.day{display:flex;justify-content:space-between;align-items:center;background:var(--card);
+  border-radius:18px;padding:14px 18px;margin:10px 0;color:var(--text);border:1px solid var(--line)}
+.day span{color:var(--muted);font-size:.9rem}
+
+footer{margin-top:44px;text-align:center;color:var(--muted);font-size:.85rem;line-height:1.9}
+.btn{display:inline-block;margin-top:8px;padding:10px 20px;border-radius:999px;
+  background:var(--accent-dim);color:var(--accent);font-weight:500}
+
+@keyframes rise{from{opacity:.35;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.story{animation:none}}
 """
+
+SECTION_ICONS = {"toronto": "🏙️", "canada": "🍁", "world": "🌍", "tech": "💡"}
+
+
+def section_header(title: str) -> str:
+    icon = next((v for k, v in SECTION_ICONS.items() if k in title.lower()), "📰")
+    return (f"<div class='section'><div class='icon'>{icon}</div>"
+            f"<h2>{html.escape(title)}</h2></div>")
+
+
+def greeting(now: datetime) -> str:
+    if now.hour < 12:
+        return "Good morning ☕"
+    if now.hour < 18:
+        return "Good afternoon"
+    return "Good evening"
 
 
 def page(title: str, body: str) -> str:
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#141210">
+<meta name="color-scheme" content="dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Morning Brief">
 <title>{html.escape(title)}</title><style>{CSS}</style></head>
 <body><main>{body}</main></body></html>"""
 
@@ -218,38 +294,47 @@ def page(title: str, body: str) -> str:
 def render(digest: dict | None, items: list[dict], now: datetime) -> str:
     e = html.escape
     by_id = {it["id"]: it for it in items}
-    parts = [f"<h1>Morning Brief</h1><p class='date'>{now:%A, %B %d, %Y}</p>"]
+
+    stories = sum(len(s.get("stories", [])) for s in (digest or {}).get("sections", []))
+    minutes = max(2, round(stories * 0.6)) if stories else None
+    meta = f"{now:%A, %B} {now.day}" + (f" · {stories} stories · ~{minutes} min read" if stories else "")
+    parts = [f"<p class='hello'>{greeting(now)}</p><h1>Your Morning Brief</h1>"
+             f"<p class='meta'>{meta}</p>"]
 
     if digest:
-        parts.append(f"<div class='overview'>{e(digest.get('overview', ''))}</div>")
+        parts.append(f"<div class='overview'><div class='label'>Today at a glance</div>"
+                     f"<p>{e(digest.get('overview', ''))}</p></div>")
+        delay = 0
         for section in digest.get("sections", []):
-            parts.append(f"<h2>{e(section.get('title', ''))}</h2>")
+            parts.append(section_header(section.get("title", "")))
             for s in section.get("stories", []):
-                links = " ".join(
-                    f"<a href='{e(by_id[i]['link'])}'>{e(by_id[i]['source'][:40])}</a>"
+                links = "".join(
+                    f"<a href='{e(by_id[i]['link'])}'>{e(by_id[i]['source'][:32])} ↗</a>"
                     for i in s.get("ids", []) if i in by_id)
                 parts.append(
-                    f"<div class='story'><h3>{e(s.get('headline', ''))}</h3>"
+                    f"<div class='story' style='animation-delay:{min(delay, 8) * 0.05:.2f}s'>"
+                    f"<h3>{e(s.get('headline', ''))}</h3>"
                     f"<p>{e(s.get('summary', ''))}</p>"
-                    f"<p class='why'>Why it matters: {e(s.get('why_it_matters', ''))}</p>"
+                    f"<div class='why'><span>👉</span><div>{e(s.get('why_it_matters', ''))}</div></div>"
                     f"<div class='links'>{links}</div></div>")
+                delay += 1
         term = digest.get("term_of_the_day") or {}
         if term.get("term"):
-            parts.append(f"<div class='term'><strong>Term of the day: {e(term['term'])}</strong>"
-                         f"<p>{e(term.get('explanation', ''))}</p></div>")
+            parts.append(f"<div class='term'><div class='label'>📘 Term of the day</div>"
+                         f"<h3>{e(term['term'])}</h3><p>{e(term.get('explanation', ''))}</p></div>")
     else:
         # Backup plan: if the AI failed, still show the raw headlines.
-        parts.append("<div class='overview'>The AI summary failed today, "
-                     "so here are the raw headlines.</div>")
+        parts.append("<div class='overview'><div class='label'>Heads up</div>"
+                     "<p>The AI summary didn't work today, so here are the raw headlines.</p></div>")
         for section in FEEDS:
-            parts.append(f"<h2>{e(section)}</h2>")
+            parts.append(section_header(section))
             for it in [x for x in items if x["feed_section"] == section][:12]:
                 parts.append(f"<div class='story'><h3><a href='{e(it['link'])}'>"
-                             f"{e(it['title'])}</a></h3><p class='why'>{e(it['source'])}</p></div>")
+                             f"{e(it['title'])}</a></h3><p>{e(it['source'])}</p></div>")
 
-    parts.append(f"<footer>Updated {now:%I:%M %p} Toronto time · "
-                 f"{len(items)} headlines read · <a href='archive/'>Past briefs</a></footer>")
-    return page(f"Morning Brief {now:%b %d}", "".join(parts))
+    parts.append(f"<footer>Updated {now:%-I:%M %p} · {len(items)} headlines read<br>"
+                 f"<a class='btn' href='archive/'>📅 Past briefs</a></footer>")
+    return page(f"Morning Brief · {now:%b} {now.day}", "".join(parts))
 
 
 def save(page_html: str, now: datetime) -> None:
@@ -261,9 +346,15 @@ def save(page_html: str, now: datetime) -> None:
         page_html.replace("href='archive/'", "href='./'"), encoding="utf-8")
 
     days = sorted((p.stem for p in archive.glob("20*.html")), reverse=True)
-    rows = "".join(f"<p><a href='{d}.html'>{d}</a></p>" for d in days)
+    rows = "".join(
+        f"<a class='day' href='{d}.html'>"
+        f"{datetime.strptime(d, '%Y-%m-%d'):%A, %B} {int(d[-2:])}<span>{d[:4]} →</span></a>"
+        for d in days)
     (archive / "index.html").write_text(
-        page("Past briefs", f"<h1>Past briefs</h1><p><a href='../'>Today</a></p>{rows}"),
+        page("Past briefs",
+             f"<p class='hello'>Archive</p><h1>Past briefs</h1>"
+             f"<p class='meta'>{len(days)} day{'s' if len(days) != 1 else ''} saved</p>{rows}"
+             f"<footer><a class='btn' href='../'>← Today's brief</a></footer>"),
         encoding="utf-8")
 
 # ---------------------------------------------------------------------------
