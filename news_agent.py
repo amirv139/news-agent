@@ -137,7 +137,9 @@ Below are today's headlines as JSON (each has an id). Using ONLY these headlines
 2. Group the most important stories into these sections, in this order:
    "Toronto & Ontario", "Canada business & manufacturing",
    "World business & manufacturing", "Tech".
-   Pick 3-6 stories per section (fewer if there isn't enough real news).
+   Every section MUST contain 3-6 stories. Each section has plenty of headlines
+   (see "feed_section"), so never leave a section empty or with only 1 story.
+   Aim for 14-20 stories in total.
    Merge headlines about the same event into one story.
    Skip celebrity news, sports, opinion fluff and ads.
 3. For each story give: a clear headline, a 2-3 sentence summary in plain English,
@@ -186,6 +188,12 @@ def ask_gemini(items: list[dict]) -> dict:
         return json.loads(text)
 
     raise RuntimeError("Gemini did not answer after 4 tries")
+
+MIN_STORIES = 10          # if Gemini returns fewer, ask once more
+
+
+def story_count(digest: dict) -> int:
+    return sum(len(sec.get("stories") or []) for sec in digest.get("sections") or [])
 
 # ---------------------------------------------------------------------------
 # STEP 3 - build the web page
@@ -306,6 +314,8 @@ def render(digest: dict | None, items: list[dict], now: datetime) -> str:
                      f"<p>{e(digest.get('overview', ''))}</p></div>")
         delay = 0
         for section in digest.get("sections", []):
+            if not section.get("stories"):
+                continue                      # hide empty sections
             parts.append(section_header(section.get("title", "")))
             for s in section.get("stories", []):
                 links = "".join(
@@ -365,10 +375,21 @@ def main() -> None:
     print(f"Collected {len(items)} headlines")
 
     digest = None
-    try:
-        digest = ask_gemini(items)
-    except Exception as err:
-        print(f"AI step failed, using headline-only page: {err}")
+    for attempt in range(2):                 # retry once if the answer is too thin
+        try:
+            result = ask_gemini(items)
+        except Exception as err:
+            print(f"AI step failed: {err}")
+            continue
+        count = story_count(result)
+        print(f"Gemini returned {count} stories")
+        if digest is None or count > story_count(digest):
+            digest = result
+        if count >= MIN_STORIES:
+            break
+        print(f"Fewer than {MIN_STORIES} stories, asking again")
+    if digest is None:
+        print("AI step failed, using headline-only page")
 
     save(render(digest, items, now), now)
     print("Saved docs/index.html")
