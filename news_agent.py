@@ -183,9 +183,10 @@ RESPONSE_SCHEMA = {
             "required": ["title", "stories"],
         }},
         "term_of_the_day": {"type": "OBJECT", "properties": {
-            "term": {"type": "STRING"}, "explanation": {"type": "STRING"}}},
+            "term": {"type": "STRING"}, "explanation": {"type": "STRING"}},
+            "required": ["term", "explanation"]},
     },
-    "required": ["overview", "sections"],
+    "required": ["overview", "sections", "term_of_the_day"],
 }
 
 
@@ -360,7 +361,7 @@ def render(digest: dict | None, items: list[dict], now: datetime) -> str:
                     f"<div class='links'>{links}</div></div>")
                 delay += 1
         term = digest.get("term_of_the_day") or {}
-        if term.get("term"):
+        if term.get("term") and term.get("explanation"):
             parts.append(f"<div class='term'><div class='label'>📘 Term of the day</div>"
                          f"<h3>{e(term['term'])}</h3><p>{e(term.get('explanation', ''))}</p></div>")
     else:
