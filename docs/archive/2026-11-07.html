@@ -1,0 +1,78 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#141210">
+<meta name="color-scheme" content="dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Morning Brief">
+<title>Morning Brief · Nov 7</title><style>
+/* Always dark, warm and dim - made for reading early in the morning */
+:root{
+  --bg:#141210;          /* warm near-black */
+  --bg-glow:#1d1915;
+  --card:#1e1b18;
+  --card-hi:#25211d;
+  --text:#d9d1c5;        /* soft cream, not bright white */
+  --soft:#b3aa9d;
+  --muted:#857c71;
+  --accent:#d9a066;      /* gentle amber */
+  --accent-dim:rgba(217,160,102,.13);
+  --line:rgba(255,235,210,.06);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;color:var(--text);
+  background:radial-gradient(120% 60% at 50% 0%,var(--bg-glow) 0%,var(--bg) 60%) fixed,var(--bg);
+  font:17px/1.7 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased}
+main{max-width:640px;margin:0 auto;padding:34px 16px 70px}
+a{color:var(--accent);text-decoration:none}
+
+.hello{font-size:.95rem;color:var(--muted);margin:0;letter-spacing:.2px}
+h1{font-size:1.85rem;font-weight:650;margin:2px 0 4px;letter-spacing:-.3px;color:var(--text)}
+.meta{color:var(--muted);font-size:.9rem;margin:0 0 24px}
+
+.overview{position:relative;background:linear-gradient(145deg,#2a221a 0%,var(--card) 70%);
+  border-radius:24px;padding:20px 20px 20px;color:var(--text);
+  box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.overview .label{display:inline-block;font-size:.75rem;font-weight:600;letter-spacing:.6px;
+  text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.overview p{margin:0}
+
+.section{display:flex;align-items:center;gap:10px;margin:40px 4px 14px}
+.section .icon{width:38px;height:38px;border-radius:14px;background:var(--accent-dim);
+  display:grid;place-items:center;font-size:1.15rem}
+.section h2{font-size:1.1rem;font-weight:600;margin:0;color:var(--text)}
+
+.story{background:var(--card);border-radius:22px;padding:18px 20px;margin:12px 0;
+  border:1px solid var(--line);box-shadow:0 6px 20px rgba(0,0,0,.18);
+  animation:rise .5s ease-out both}
+.story h3{font-size:1.05rem;line-height:1.45;font-weight:600;margin:0 0 8px;color:var(--text)}
+.story p{margin:0 0 10px;color:var(--soft)}
+.why{display:flex;gap:10px;background:var(--card-hi);border-radius:14px;padding:10px 12px;
+  font-size:.92rem;color:var(--soft);margin:12px 0 4px}
+.why span{flex:none}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.links a{font-size:.8rem;padding:6px 12px;border-radius:999px;background:var(--accent-dim);
+  color:var(--accent);transition:background .25s ease}
+.links a:active,.links a:hover{background:rgba(217,160,102,.22)}
+
+.term{margin-top:40px;border-radius:22px;padding:18px 20px;background:var(--card);
+  border:1px dashed rgba(217,160,102,.25)}
+.term .label{font-size:.75rem;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--accent)}
+.term h3{margin:4px 0 6px;font-size:1.05rem}
+.term p{margin:0;color:var(--soft)}
+
+.day{display:flex;justify-content:space-between;align-items:center;background:var(--card);
+  border-radius:18px;padding:14px 18px;margin:10px 0;color:var(--text);border:1px solid var(--line)}
+.day span{color:var(--muted);font-size:.9rem}
+
+footer{margin-top:44px;text-align:center;color:var(--muted);font-size:.85rem;line-height:1.9}
+.btn{display:inline-block;margin-top:8px;padding:10px 20px;border-radius:999px;
+  background:var(--accent-dim);color:var(--accent);font-weight:500}
+
+@keyframes rise{from{opacity:.35;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.story{animation:none}}
+</style></head>
+<body><main><p class='hello'>Good morning ☕</p><h1>Your Morning Brief</h1><p class='meta'>Saturday, November 7 · 2 stories · ~2 min read</p><div class='overview'><div class='label'>Today at a glance</div><p>Good morning! Ontario&#x27;s manufacturing sector remains a vital economic focus with local firms winning major nuclear contracts and steady job figures, even as national data shows a slight contraction in broader manufacturing activity. Meanwhile, major international shifts in trade policies and massive tech investments are setting a dynamic pace for industrial supply chains. Staying informed on these trends will help you navigate the changing landscape of local business and trade.</p></div><div class='section'><div class='icon'>🏙️</div><h2>Toronto &amp; Ontario</h2></div><div class='story' style='animation-delay:0.00s'><h3>GTHA Manufacturers Win Contracts to Build Small Modular Reactors</h3><p>The Ontario government has awarded contracts to manufacturers in the Greater Toronto and Hamilton Area (GTHA) to build the G7&#x27;s first Small Modular Reactor. Additional local manufacturers have also secured contracts to supply the Darlington Nuclear Plant.</p><div class='why'><span>👉</span><div>This provides massive, long-term engineering and manufacturing work directly within our regional supply chain.</div></div><div class='links'><a href='https://news.google.com/rss/articles/CBMiywFBVV95cUxQUm5zbnBveU9OMExYdnZsWFE0M2J2ZlZGbW5lZEI4eGxDRUFEcXc4V2hGc3hFTVg2cDNpa2phazRacmdXdDkyRDRqOXNFYkFmZ3psb2psWWl4eWRrc1o5WW1TVS16NnhTYXRhMHQwTTFNODVFdHZLRDBqdlhkQlpLUFA1ZFpONDd5YTlQNEVqck01NUZidXJKVGdkYmtmVHdZcXIxM3lybjNwNGR0NU1ib1JacmtZU05pX1FkTHVNM010ZHZJVlZxMGJIWQ?oc=5'>&quot;Ontario manufacturing when:1d&quot;  ↗</a><a href='https://news.google.com/rss/articles/CBMi3AFBVV95cUxOeGJkSkd0TWFBVkczLVdTVG8tQWRFS2doWjhMeXdnVHBOeVlwRFEtNjB1c3BCNjZpa1FsVTNOYTgwNld2aUlLY3Z1MHFsaVBhLXl3S2xOTzRobmtscjh1T09qdl9scWxPMklybURFeHRZYnNhOXdWVnJYZG1ZT1E1ZXlmdDBPcTdPYU9venFjTndyUEI0dmpZazZENjd6cTBOY08xQkRpNzBSdXdINk5WcnN0NFRpQllHdldxdXRyOXVBdWstdDRGdVpDNVZEbXZUTHpyOUJ2bmRTNWNz?oc=5'>&quot;Ontario manufacturing when:1d&quot;  ↗</a><a href='https://news.google.com/rss/articles/CBMiogFBVV95cUxOS1pnZDBaSl9wUTkyZlNwWGJrYS05ZHVNZ1ZVc0hpb0x0aGpsNm5UakNfOFFCOXhEblVMSjB0SjBCa0xEemtDRU5kVnc0c3VPd09HeEFDWk9TckQ5bWRJV0ZCeDBETi1Ba2xjVElfaU50VkxERXNlYnlKZE9fY1pyc0JTYWFDM2pONjZnT1pWNUZlZDJGcEd1U3BsejlhYVByN0E?oc=5'>&quot;Ontario manufacturing when:1d&quot;  ↗</a></div></div><div class='story' style='animation-delay:0.05s'><h3>Ontario Manufacturing Jobs Prove a &#x27;Bright Spot&#x27;</h3><p>Economists have highlighted Ontario manufacturing job gains as a positive highlight amidst a generally lackluster October job market. Overall, Canada&#x27;s national unemployment rate ticked up slightly to 6.7% after the country lost a small number of jobs.</p><div class='why'><span>👉</span><div>Local factory and plant workers in the Vaughan and Newmarket areas benefit from regional job stability even when the broader national economy slows down.</div></div><div class='links'><a href='https://news.google.com/rss/articles/CBMiqAFBVV95cUxNSnZQSVNYbW5QeVp2aWlIZll1Nm5qNHMxWDdIYUpVM0VKUnZvUlJnNC1Rd1lkOWJTR1BMdzBkenFQWFhsR3VXeGtvRDZGVjRxZHpScHh4V2xJN3htQnVCSlZwbDVna000cE9UWG5FSVY1aTdTcTk5bWJKZ1lXQXhHODRvcjBZTUJGVDdWckluRWpTZ01ONzF4NXV1UU0yVFM4YlFYSDZWUjA?oc=5'>&quot;Ontario manufacturing when:1d&quot;  ↗</a><a href='https://www.cbc.ca/news/business/canada-jobs-report-oct-2026-statscan-9.7411830?cmp=rss'>CBC | Business News ↗</a><a href='https://www.canadianmanufacturing.com/manufacturing/unemployment-rate-rose-to-6-7-in-october-statcan-says-322681/'>Canadian Manufacturing ↗</a></div></div><div class='section'><div class='icon'>🍁</div><h2>Canada business &amp; manufacturing</h2></div><div class='section'><div class='icon'>🌍</div><h2>World business &amp; manufacturing</h2></div><div class='section'><div class='icon'>💡</div><h2>Tech</h2></div><div class='term'><div class='label'>📘 Term of the day</div><h3>Small Modular Reactor (SMR)</h3><p>A smaller, advanced type of nuclear reactor that can be factory-built and transported to sites for clean energy generation, creating major manufacturing opportunities for local industrial suppliers.</p></div><footer>Updated 7:10 AM · 110 headlines read<br><a class='btn' href='./'>📅 Past briefs</a></footer></main></body></html>
