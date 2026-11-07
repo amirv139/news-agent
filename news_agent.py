@@ -160,6 +160,35 @@ HEADLINES:
 """
 
 
+# Forces Gemini to answer in exactly this shape, so the JSON is always valid.
+RESPONSE_SCHEMA = {
+    "type": "OBJECT",
+    "properties": {
+        "overview": {"type": "STRING"},
+        "sections": {"type": "ARRAY", "items": {
+            "type": "OBJECT",
+            "properties": {
+                "title": {"type": "STRING"},
+                "stories": {"type": "ARRAY", "items": {
+                    "type": "OBJECT",
+                    "properties": {
+                        "headline": {"type": "STRING"},
+                        "summary": {"type": "STRING"},
+                        "why_it_matters": {"type": "STRING"},
+                        "ids": {"type": "ARRAY", "items": {"type": "INTEGER"}},
+                    },
+                    "required": ["headline", "summary", "why_it_matters", "ids"],
+                }},
+            },
+            "required": ["title", "stories"],
+        }},
+        "term_of_the_day": {"type": "OBJECT", "properties": {
+            "term": {"type": "STRING"}, "explanation": {"type": "STRING"}}},
+    },
+    "required": ["overview", "sections"],
+}
+
+
 def ask_gemini(items: list[dict]) -> dict:
     api_key = os.environ["GEMINI_API_KEY"]
     compact = [{k: it[k] for k in ("id", "feed_section", "source", "title", "snippet")}
@@ -172,7 +201,9 @@ def ask_gemini(items: list[dict]) -> dict:
     body = {
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {"temperature": 0.3,
-                             "responseMimeType": "application/json"},
+                             "maxOutputTokens": 8192,
+                             "responseMimeType": "application/json",
+                             "responseSchema": RESPONSE_SCHEMA},
     }
 
     for attempt in range(4):                 # retry if Google is busy (429/503)
@@ -375,7 +406,7 @@ def main() -> None:
     print(f"Collected {len(items)} headlines")
 
     digest = None
-    for attempt in range(2):                 # retry once if the answer is too thin
+    for attempt in range(3):                 # retry if the answer is broken or too thin
         try:
             result = ask_gemini(items)
         except Exception as err:
