@@ -2,13 +2,22 @@ name: Daily news brief
 
 on:
   schedule:
-    # GitHub uses UTC time. 10:17 UTC = 5:17 AM Toronto in winter, 6:17 AM in summer.
-    # (GitHub sometimes starts scheduled jobs a bit late, so we start early.)
-    - cron: "17 10 * * *"
-  workflow_dispatch:   # adds a "Run workflow" button so you can test it any time
+    # GitHub uses UTC time and sometimes runs late or skips a scheduled run,
+    # so we try several times each morning. Only the first successful try
+    # builds a brief; the later ones see it's already done and stop.
+    # Toronto times (winter / summer):
+    - cron: "17 9 * * *"    # 4:17 AM / 5:17 AM
+    - cron: "47 10 * * *"   # 5:47 AM / 6:47 AM
+    - cron: "23 11 * * *"   # 6:23 AM / 7:23 AM
+    - cron: "53 12 * * *"   # 7:53 AM / 8:53 AM
+  workflow_dispatch:   # "Run workflow" button: always builds a fresh brief
 
 permissions:
   contents: write      # lets the bot save the new page into your repo
+
+concurrency:
+  group: daily-news
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -16,23 +25,39 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check if today's brief already exists
+        id: check
+        run: |
+          TODAY=$(TZ=America/Toronto date +%F)
+          if [ "${{ github.event_name }}" = "schedule" ] && [ -f "docs/archive/$TODAY.html" ]; then
+            echo "Today's brief ($TODAY) is already done. Nothing to do."
+            echo "done=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "done=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/setup-python@v5
+        if: steps.check.outputs.done == 'false'
         with:
           python-version: "3.12"
 
       - name: Install packages
+        if: steps.check.outputs.done == 'false'
         run: pip install -r requirements.txt
 
       - name: Run the news agent
+        if: steps.check.outputs.done == 'false'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-flash-lite-latest' }}
         run: python news_agent.py
 
       - name: Save the new page
+        if: steps.check.outputs.done == 'false'
         run: |
           git config user.name "news-bot"
           git config user.email "news-bot@users.noreply.github.com"
           git add docs
-          git commit -m "Morning brief $(date -u +%F)" || echo "Nothing new"
+          git commit -m "Morning brief $(TZ=America/Toronto date +%F)" || echo "Nothing new"
+          git pull --rebase origin main || true
           git push
